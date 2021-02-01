@@ -52,7 +52,7 @@ public class PhotoActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);  // на весь экран 
 
         setContentView(R.layout.activity_photo);
 
@@ -79,7 +79,7 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
 
-        imageView.setOnClickListener(v -> {
+        imageView.setOnClickListener(v -> {  // вызываем экшнбар по клику
             if (photo != null && !isToolbarVisible) {
                 showActionBar();
             }
@@ -97,7 +97,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {  // добавление опций установить на обои и поделиться фото
         getMenuInflater().inflate(R.menu.menu_photo, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -122,7 +122,7 @@ public class PhotoActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void hideActionBar() {
+    private void hideActionBar() {  // прячем экшнбар просто с помощью анимации
         toolbar.animate().translationY(-toolbar.getHeight()).setDuration(300).start();
         isToolbarVisible = false;
     }
@@ -130,15 +130,17 @@ public class PhotoActivity extends AppCompatActivity {
     private void showActionBar() {
         toolbar.animate().translationY(0).setDuration(300).start();
         isToolbarVisible = true;
-    }
+    } 
 
-    private void performSharing() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+    private void performSharing() { // "поделиться фото"
+        // проверка разрещений на доступ к внешнему хранилищу
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { 
+            // с помощью хранилища MediaStore получили путь к этому файлу с картинкой
             String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, getIntent().getStringExtra(EXTRA_URL), "");
             Uri uri = Uri.parse(path);
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("image/jpeg");
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setType("image/jpeg"); // задаем тип формат
+            intent.putExtra(Intent.EXTRA_STREAM, uri);// передаем uri картинки
             startActivity(Intent.createChooser(intent, getString(R.string.share)));
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -147,7 +149,7 @@ public class PhotoActivity extends AppCompatActivity {
         }
     }
 
-    private void setWallpaper() {
+    private void setWallpaper() { // "установить как обои" с помощью библиотеки WallpaperManager
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
         try {
             wallpaperManager.setBitmap(photo);
@@ -158,7 +160,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка запроса на разрещение доступа
         if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 performSharing();
