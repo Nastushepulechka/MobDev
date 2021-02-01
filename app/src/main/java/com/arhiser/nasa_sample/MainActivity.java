@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new Adapter();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2); // выводиться будет в две колонки
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -45,16 +45,16 @@ public class MainActivity extends AppCompatActivity {
 
         App app = (App) getApplication();
 
-        disposable.add(app.getNasaService().getApi().getDatesWithPhoto()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BiConsumer<List<DateDTO>, Throwable>() {
+        disposable.add(app.getNasaService().getApi().getDatesWithPhoto() // возвращает объект синг
+                .subscribeOn(Schedulers.io())  // определяет в каком потоке будет выполняться, в данном случае в полоке ввода-вывода
+                .observeOn(AndroidSchedulers.mainThread()) // в каком потоке будут обрабатываться данных от сервера
+                .subscribe(new BiConsumer<List<DateDTO>, Throwable>() { // BiConsumer - "наблюдатель", а наблюдаемый объект - сингл
                     @Override
                     public void accept(List<DateDTO> dates, Throwable throwable) throws Exception {
                         if (throwable != null) {
                             Toast.makeText(MainActivity.this, "Data loading error", Toast.LENGTH_SHORT).show();
                         } else {
-                            adapter.setDates(dates);
+                            adapter.setDates(dates); // получение данных
                         }
                     }
                 }));
