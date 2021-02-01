@@ -16,19 +16,20 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        nasaService = new NasaService();
+        nasaService = new NasaService(); //инициализируем сетевой сервис
 
+        //  конфигурация для загрузчика картинок
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .defaultDisplayImageOptions(defaultOptions)
-
+                // задаем размер кэша
                 .memoryCache(new LruMemoryCache(20 * 1024 * 1024))
                 .memoryCacheSize(20 * 1024 * 1024)
                 .build();
 
-        ImageLoader.getInstance().init(config);
+        ImageLoader.getInstance().init(config); // инициализируем загрузчик картинок
     }
 
     public NasaService getNasaService() {
